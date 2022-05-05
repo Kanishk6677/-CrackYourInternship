@@ -1,0 +1,27 @@
+void store_nodes(Node *root,unordered_set<int>&leaf_nodes,unordered_set<int>&all_nodes)
+{
+    if(!root) return;
+    all_nodes.insert(root->data);
+    if(root->left==NULL and root->right==NULL)
+    {
+        leaf_nodes.insert(root->data);
+        return;
+    }
+    store_nodes(root->left,leaf_nodes,all_nodes);
+    store_nodes(root->right,leaf_nodes,all_nodes);
+    
+}
+bool isDeadEnd(Node *root)
+{
+    unordered_set<int>leaf_nodes,all_nodes;
+    all_nodes.insert(0);
+    store_nodes(root,leaf_nodes,all_nodes);
+    for(auto i=leaf_nodes.begin();i!=leaf_nodes.end();i++)
+    {
+        int x=(*i);
+        if(all_nodes.find(x+1)!=all_nodes.end() and all_nodes.find(x-1)!=all_nodes.end())
+        return true;
+    }
+    return false;
+    
+}
