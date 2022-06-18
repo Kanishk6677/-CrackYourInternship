@@ -1,42 +1,44 @@
-class Solution
-{
+class Solution {
 public:
-	int closedIsland(vector<vector<int>>& grid)
-	{
-		maxRows = grid.size();
-		maxCols = grid[0].size();
-		int surroundedIslands = 0;
-		// check the boarders, turn it to water
-		for (int col = 0; col < maxCols; ++col)
-		{
-			if (grid[0][col] == 0) turnToWater(grid, 0, col);
-			if (grid[maxRows - 1][col] == 0) turnToWater(grid, maxRows - 1, col);
-		}
-
-		for (int row = 0; row < maxRows; ++row)
-		{
-			if (grid[row][0] == 0) turnToWater(grid, row, 0);
-			if (grid[row][maxCols - 1]) turnToWater(grid, row, maxCols - 1);
-		}
-
-		for(int row = 1; row < maxRows-1; ++row)
-			for(int col = 1; col < maxCols-1; ++col)
-				if (grid[row][col] == 0)
-				{
-					++surroundedIslands;
-					turnToWater(grid, row, col);
-				}
-		return surroundedIslands;
-	}
-private:
-	int maxRows = 0;
-	int maxCols = 0;
-	void turnToWater(vector<vector<int>>& grid, int row, int col)
-	{
-		grid[row][col] = 1;
-		if (row && grid[row - 1][col] == 0) turnToWater(grid, row - 1, col);
-		if (col && grid[row][col - 1] == 0) turnToWater(grid, row, col - 1);
-		if (row < maxRows - 1 && grid[row + 1][col] == 0) turnToWater(grid, row + 1, col);
-		if (col < maxCols - 1 && grid[row][col + 1] == 0) turnToWater(grid, row, col + 1);
-	}
+    void dfs(vector<vector<int>>& grid,vector<vector<bool>>& vis, int i, int j,int m,int n){
+       // Base case
+	   // If its out of bounds and already visited, so do nothing just return.
+        if(i<0||i>=m||j<0||j>=n||grid[i][j]==1||vis[i][j]){
+            return ;
+        }
+		// make it as visited
+        vis[i][j]=true;
+       
+        // calling dfs in all the four directions. 
+        dfs(grid,vis,i+1,j,m,n);
+        dfs(grid,vis,i-1,j,m,n);
+        dfs(grid,vis,i,j+1,m,n);
+        dfs(grid,vis,i,j-1,m,n);
+        
+    }
+    int closedIsland(vector<vector<int>>& grid) {
+        int n=grid.size();
+        int m=grid[0].size();
+        int area=0;
+        vector<vector<bool>>visited(n,vector<bool>(m,false));
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<m;j++)
+            {
+                if(i==0||j==0||j==m-1||i==n-1) dfs(grid,visited,i,j,n,m);
+            }
+        }
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<m;j++)
+            {
+                if(grid[i][j]==0 and visited[i][j]!=1)
+                {
+                    dfs(grid,visited,i,j,n,m);
+                    area++;
+                }
+            }
+        }
+        return area;
+    }
 };
